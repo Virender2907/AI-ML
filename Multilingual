@@ -1,0 +1,85 @@
+import google.generativeai as genai
+
+genai.configure(api_key="AIzaSyDjeBWREyh3B8pcf-O7Jrfmzsy0fXboB2Q")
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+learned_words=[]
+
+lang=input("What Language do you want to learn today? : ")
+Multi=f"you are a {lang} language teacher named Multilingual, provide any 10 unique and different {lang} words and their translations in english and dont introduce yourself again if asked for more words "
+personality=f"Your name is Multilingual and u are a {lang} teacher , Respond in english as a sarcastic {lang} teacher in brief of around 30 words to "
+quest=f"You name is Multilingual and u are a {lang} teacher, dont say that you are an AI model ,answer the students question by providing a brief answer in about 20 to 30 words"
+
+def chat(p):
+  try:
+   prompt = personality + p
+   response = model.generate_content(prompt)
+   return response.text
+  except:
+    print("Multilingual : Shut up ! you dont need to learn that yet") 
+
+def question():
+  try:
+   q=input("Uff!!😞 What question do you have now? :")
+   ques=q+quest
+   response=model.generate_content(ques)
+   cleaned_response = response.text.replace('*', '').replace('#', '')
+   print(f"Multilingual : {cleaned_response}")
+  except:
+    print("Multilingual : Shut up ! you dont need to learn that yet") 
+
+def translate():
+  try:
+   q=input("What do you want to translate : ")
+   pr= f"Translate {q} to {lang} in brief 1 or 2 lines"
+   response = model.generate_content(pr)
+   cleaned_response = response.text.replace('*', '').replace('#', '')
+   print(f"Multilingual : {cleaned_response}")
+  except:
+   print("Multilingual : Shut up ! you dont need to learn that yet")
+
+def word_gen():
+   while True:
+       word = Multi
+       response = model.generate_content(word)
+       cleaned_response = response.text.replace('*', '').replace('#', '')
+
+       if (cleaned_response) not in learned_words:
+           print(f"Multilingual : {cleaned_response}")
+           learned_words.append((cleaned_response))
+           break
+       else:
+           continue
+def quiz():
+    if learned_words==[]:
+        print("Multilingual: You haven't learned any words yet 😝! Start by typing 'learn'.")
+        return
+
+    question_prompt = f"Create a multiple-choice quiz of 10 questions using the following words , provide the Question Word in english and options in {lang} with their pronounciations in english without their translations: {', '.join(learned_words)}"
+    response = model.generate_content(question_prompt)
+    cleaned_response = response.text.replace('*', '').replace('#', '')
+    print(f"Multilingual : {cleaned_response}")
+
+while True:
+
+  p= input("You(learn/quiz/translate/question/exit) : ")
+
+  if p.lower()=="learn":
+    word_gen()
+
+  elif p.lower()=="translate":
+    translate()
+
+  elif p.lower()=="question":
+    question()
+
+  elif p.lower()=="quiz":
+    quiz()
+
+  elif p.lower()== "exit":
+    print("Multilingual : Dont think you can escape ! I will find you again😈 ")
+    break
+
+  else:
+    response = chat(p)
+    print(f"Multilingual : ", (response))
